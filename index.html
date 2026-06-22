@@ -193,7 +193,7 @@ a { color: inherit; text-decoration: none; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.25rem;
   transition: opacity .7s var(--ease-out), visibility .7s var(--ease-out);
 }
-.loader.out { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader.out { opacity: 0; visibility: hidden; pointer-events: none; z-index: -1; display: none; }
 .loader__word {
   font-family: var(--f-display); font-size: clamp(2rem,6vw,3.5rem); font-weight: 300;
   color: var(--white); letter-spacing: .06em; position: relative;
@@ -1693,14 +1693,16 @@ textarea.form__input { resize: vertical; min-height: 100px; }
   // ── Loader ──────────────────────────────────────────
   function hideLoader() {
     var l = document.getElementById('loader');
-    if (l) l.classList.add('out');
+    if (l) {
+      l.classList.add('out');
+      setTimeout(function() { l.style.display = 'none'; }, 800);
+    }
   }
-  if (document.readyState === 'complete') {
-    setTimeout(hideLoader, 350);
-  } else {
-    window.addEventListener('load', function () { setTimeout(hideLoader, 350); });
-  }
-  setTimeout(hideLoader, 2800);
+  // Fire immediately, no waiting
+  hideLoader();
+  setTimeout(hideLoader, 100);
+  setTimeout(hideLoader, 500);
+  window.addEventListener('load', hideLoader);
 
   // ── Starfield ────────────────────────────────────────
   var canvas = document.getElementById('starfield');
